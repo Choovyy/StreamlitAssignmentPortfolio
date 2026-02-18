@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import time
+from pathlib import Path
 
 st.set_page_config(page_title="Tovi Joshua | Portfolio", page_icon="✨", layout="wide")
 
@@ -18,7 +19,8 @@ body {background-color: #f8fafc}
 """
 st.markdown(CSS, unsafe_allow_html=True)
 
-PROFILE_IMG = "D:\\Last nalang ni\\profilepic\\portfolio1.jpg"
+# Resolve profile image relative to this file so it works locally and on Streamlit Cloud
+PROFILE_IMG = str(Path(__file__).resolve().parents[1] / "profilepic" / "portfolio1.jpg")
 PROJECT_IMG = "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80"
 
 
@@ -247,7 +249,12 @@ Projects:
 
 
 def main():
-    st.sidebar.image(PROFILE_IMG, width=120)
+    # Show profile image if present, otherwise fall back to a remote placeholder
+    profile_path = Path(PROFILE_IMG)
+    if profile_path.exists():
+        st.sidebar.image(str(profile_path), width=120)
+    else:
+        st.sidebar.image(PROJECT_IMG, width=120)
     menu = st.sidebar.radio("Navigation", [
         "Home",
         "About Me",
